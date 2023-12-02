@@ -5,9 +5,7 @@ from .forms import ClientForm
 from .models import Client
 from .models import User
 
-#from myapp.forms import ClientForm
-from myapp.forms import SignUpForm
-from myapp.forms import LoginForm
+
 
 
 def signup(request):
@@ -29,20 +27,6 @@ def signup(request):
     return render(request, 'signup.html', {'form': form})
 
 
-("""def signup(request):
-    if request.method == 'POST':
-        form = SignUpForm(request.POST)
-        if form.is_valid():
-            # Form data is valid, process the data here
-            name = form.cleaned_data['name']
-            email = form.cleaned_data['email']
-            password = form.cleaned_data['password']
-            return redirect('index') 
-    else:
-        form = SignUpForm()
-    return render(request, 'signup.html', {'form': form})
- """)
-
 
 def log_in(request):
     if request.method == 'POST':
@@ -62,12 +46,7 @@ def log_in(request):
 
 
 
-
-("""def index(request):
-   # context = {}
-   # context['form'] = ClientForm()
-   # return render(request,"index.html", context)
-
+def index(request):
    client = ClientForm()
    name = request.POST.get("y_name")
    pos = request.POST.get("position")
@@ -98,7 +77,7 @@ def log_in(request):
        'certifi':certifi
    }
    return render(request, "index.html", data)
-""")
+
 
 
 def my_form(request):
@@ -129,7 +108,7 @@ def cv(request) :
         lan = request.POST["languages"]
         skl = request.POST["skills"]
         certifi = request.POST["certificate"]
-       
+        extracurricular = request.POST.get("extracurricular")
 
         dict = {
             'y_name' : name,
@@ -143,15 +122,11 @@ def cv(request) :
             'eud':eud,
             'lan':lan,
             'skl':skl,
-            'certifi':certifi
+            'certifi':certifi,
+            'extracurricular': extracurricular
         }
         return render(request,'cv.html',dict);
 
-("""def validate(request):
-    cvs = []  # Initialize cv with an empty list as default value
-    if request.method == 'POST':
-        cvs = request.POST.getlist('cv[]')
-    return render(request, 'validate.html', {'cvs': cvs})""")
 
 
 
