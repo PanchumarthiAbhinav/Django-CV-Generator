@@ -1,7 +1,6 @@
 from django.db import models
 from django.contrib.auth.hashers import make_password
 
-# Create your models here.
 
 class User(models.Model):
     name = models.CharField(max_length=100)
@@ -39,6 +38,7 @@ class Client(models.Model):
     languages = models.TextField()
     skills = models.TextField(blank=True, null=True)
     certificate = models.TextField(blank=True, null=True)
+    extracurricular_activities = models.CharField(max_length=200, blank=True, null=True)
 
     def __str__(self):
         return self.y_name
