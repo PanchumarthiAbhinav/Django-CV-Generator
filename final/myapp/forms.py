@@ -1,12 +1,13 @@
 from django import forms
+from django.core import validators
 from .models import Client
 from .models import User
 from .models import CustomUser
 
 
 class SignUpForm(forms.ModelForm):
-    password = forms.CharField(widget=forms.PasswordInput)  # Use PasswordInput widget for password field
-    
+    password = forms.CharField(widget=forms.PasswordInput, validators=[validators.validate_password])
+
     class Meta:
         model = User
         fields = ['name', 'email', 'password']
@@ -14,7 +15,7 @@ class SignUpForm(forms.ModelForm):
 
 class LoginForm(forms.Form):
     email = forms.EmailField(required=True)
-    password = forms.CharField(widget=forms.PasswordInput, required=True)
+    password = forms.CharField(widget=forms.PasswordInput, required=True, validators=[validators.validate_password])
 
 
 class ClientForm(forms.ModelForm):
