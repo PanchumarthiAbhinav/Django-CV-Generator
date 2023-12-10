@@ -1,23 +1,22 @@
 from django.db import models
 from django.contrib.auth.hashers import make_password
+from django.core.validators import RegexValidator
 
 
 class User(models.Model):
     name = models.CharField(max_length=100)
-    email = models.EmailField(unique=True)  # Ensure email addresses are unique
-    password = models.CharField(max_length=128)  # Store password hashes securely
-    # You might want to add more fields for additional user information
+    email = models.EmailField(unique=True)
+    password = models.CharField(max_length=128)
 
     def __str__(self):
         return self.name
 
 
 class CustomUser(models.Model):
-    email = models.EmailField(unique=True)  # Ensure email addresses are unique
-    password = models.CharField(max_length=128)  # Store password hashes securely
+    email = models.EmailField(unique=True)
+    password = models.CharField(max_length=128)
 
     def save(self, *args, **kwargs):
-        # Hash the password before saving it to the database
         self.password = make_password(self.password)
         super().save(*args, **kwargs)
 
@@ -38,7 +37,7 @@ class Client(models.Model):
     languages = models.TextField()
     skills = models.TextField(blank=True, null=True)
     certificate = models.TextField(blank=True, null=True)
-    extracurricular_activities = models.CharField(max_length=200, blank=True, null=True, validators=[SQLInjectionValidator()])
+    extracurricular_activities = models.CharField(max_length=200, blank=True, null=True, validators=[RegexValidator(regex='^[^;]*$', message='Invalid input. Please avoid using semicolons.')])
 
     def __str__(self):
         return self.y_name
