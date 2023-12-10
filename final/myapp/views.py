@@ -1,11 +1,9 @@
 from django.shortcuts import redirect, render
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.hashers import make_password
-from .forms import ClientForm
+from .forms import ClientForm, SignUpForm, LoginForm
 from .models import Client
 from .models import User
-
-
 
 
 def signup(request):
@@ -19,13 +17,12 @@ def signup(request):
             # Hash the password before saving it to the database
             hashed_password = make_password(password)
             # Save the user to the database
-            user = User(name=name, email=email, password=hashed_password)
+            user = User.objects.create(name=name, email=email, password=hashed_password)
             user.save()
-            return redirect('index') 
+            return redirect('index')
     else:
         form = SignUpForm()
     return render(request, 'signup.html', {'form': form})
-
 
 
 def log_in(request):
@@ -45,90 +42,38 @@ def log_in(request):
     return render(request, 'login.html', {'form': form})
 
 
-
 def index(request):
-   client = ClientForm()
-   name = request.POST.get("y_name")
-   pos = request.POST.get("position")
-   prf = request.POST.get("profile")
-   loc = request.POST.get("location")
-   mail = request.POST.get("email")
-   num = request.POST.get("phone_number")
-   ln = request.POST.get("linkedin")
-   exp = request.POST.get("experience")
-   eud = request.POST.get("education")
-   lan = request.POST.get("languages")
-   skl = request.POST.get("skills")
-   certifi = request.POST.get("certificate")
-
-   data = {
-       'form': client,
-       'y_name': name,
-       'pos':pos, 
-       'prf':prf,
-       'loc':loc, 
-       'mail':mail, 
-       'num':num, 
-       'ln':ln,
-       'exp':exp,
-       'eud':eud,
-       'lan':lan,
-       'skl':skl,
-       'certifi':certifi
-   }
-   return render(request, "index.html", data)
-
-
-
-def my_form(request):
-    if request.method == "POST":
+    form = ClientForm()
+    if request.method == 'POST':
         form = ClientForm(request.POST)
         if form.is_valid():
             form.save()
+            return redirect('index')
         else:
-            print(form.errors) 
-    else:
-        form = ClientForm()
+            print(form.errors)
+    clients = Client.objects.all()
+    return render(request, 'index.html', {'form': form, 'clients': clients})
 
+
+def my_form(request):
+    form = ClientForm()
+    if request.method == 'POST':
+        form = ClientForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('index')
+        else:
+            print(form.errors)
     return render(request, 'index.html', {'form': form})
 
 
-
-def cv(request) :
-    if request.method =='POST':
-        name = request.POST["y_name"]
-        pos = request.POST["position"]
-        prf = request.POST["profile"]
-        loc = request.POST["location"]
-        mail = request.POST["email"]
-        num = request.POST["phone_number"]
-        ln = request.POST["linkedin"]
-        exp = request.POST["experience"]
-        eud = request.POST["education"]
-        lan = request.POST["languages"]
-        skl = request.POST["skills"]
-        certifi = request.POST["certificate"]
-        extracurricular = request.POST.get("extracurricular")
-
-        dict = {
-            'y_name' : name,
-            'pos':pos, 
-            'prf':prf,
-            'loc':loc, 
-            'mail':mail, 
-            'num':num, 
-            'ln':ln,
-            'exp':exp,
-            'eud':eud,
-            'lan':lan,
-            'skl':skl,
-            'certifi':certifi,
-            'extracurricular': extracurricular
-        }
-        return render(request,'cv.html',dict);
-
-
-
-
-
-
+def cv(request):
+    form = ClientForm()
+    if request.method == 'POST':
+        form = ClientForm(request.POST)
+        if form.is_valid():
+            client = form.save()
+            return render(request, 'cv.html', {'client': client})
+        else:
+            print(form.errors)
+    return render(request, 'index.html', {'form': form})
